@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { ModeSelector } from '@/components/ModeSelector';
 import { PlaybackControls } from '@/components/PlaybackControls';
 import { GenerativeVisual } from '@/components/GenerativeVisual';
+import { useAudioEngine } from '@/hooks/useAudioEngine';
 
 const Index = () => {
   const [selectedMode, setSelectedMode] = useState('focus');
   const [isPlaying, setIsPlaying] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
+
+  // Initialize audio engine
+  const { isReady } = useAudioEngine({ mode: selectedMode, isPlaying });
 
   const handleTogglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -55,6 +59,11 @@ const Index = () => {
                 {selectedMode === 'move' && 'Active energy and motivation'}
                 {selectedMode === 'study' && 'Learning focus and retention'}
               </p>
+              {!isReady && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Loading audio engine...
+                </p>
+              )}
             </div>
             
             <ModeSelector 
