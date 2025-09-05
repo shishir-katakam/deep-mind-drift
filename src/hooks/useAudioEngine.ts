@@ -8,53 +8,101 @@ interface AudioEngineConfig {
 
 export const useAudioEngine = ({ mode, isPlaying }: AudioEngineConfig) => {
   const [isReady, setIsReady] = useState(false);
-  const synthRef = useRef<Tone.PolySynth | null>(null);
-  const noiseRef = useRef<Tone.Noise | null>(null);
-  const filterRef = useRef<Tone.Filter | null>(null);
+  const padSynthRef = useRef<Tone.PolySynth | null>(null);
+  const leadSynthRef = useRef<Tone.Synth | null>(null);
+  const bassSynthRef = useRef<Tone.Synth | null>(null);
   const reverbRef = useRef<Tone.Reverb | null>(null);
-  const sequenceRef = useRef<Tone.Sequence | null>(null);
+  const delayRef = useRef<Tone.PingPongDelay | null>(null);
+  const filterRef = useRef<Tone.Filter | null>(null);
+  const padSequenceRef = useRef<Tone.Sequence | null>(null);
+  const leadSequenceRef = useRef<Tone.Sequence | null>(null);
+  const bassSequenceRef = useRef<Tone.Sequence | null>(null);
 
   // Initialize audio context and instruments
   useEffect(() => {
     const initAudio = async () => {
       try {
-        console.log('Initializing audio engine...');
+        console.log('Initializing musical ambient engine...');
         
-        // Create synth for ambient pads
-        synthRef.current = new Tone.PolySynth(Tone.Synth, {
-          oscillator: { type: 'sine' },
+        // Create warm pad synth for ambient chords
+        padSynthRef.current = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { 
+            type: 'sawtooth'
+          },
           envelope: {
-            attack: 2,
-            decay: 1,
-            sustain: 0.3,
-            release: 4
+            attack: 8,
+            decay: 2,
+            sustain: 0.6,
+            release: 12
           }
         });
 
-        // Create noise for ambient textures
-        noiseRef.current = new Tone.Noise('pink');
-        
-        // Create filter for noise shaping
-        filterRef.current = new Tone.Filter({
-          frequency: 400,
-          type: 'lowpass',
-          rolloff: -24
+        // Create soft lead synth for melodies
+        leadSynthRef.current = new Tone.Synth({
+          oscillator: { 
+            type: 'sine'
+          },
+          envelope: {
+            attack: 1,
+            decay: 1,
+            sustain: 0.4,
+            release: 8
+          }
         });
 
-        // Create reverb for ambience
+        // Create warm bass synth
+        bassSynthRef.current = new Tone.Synth({
+          oscillator: { 
+            type: 'triangle'
+          },
+          envelope: {
+            attack: 2,
+            decay: 2,
+            sustain: 0.8,
+            release: 6
+          }
+        });
+
+        // Create lush reverb
         reverbRef.current = new Tone.Reverb({
-          decay: 8,
-          wet: 0.6
+          decay: 15,
+          wet: 0.7,
+          preDelay: 0.01
+        });
+
+        // Create gentle delay
+        delayRef.current = new Tone.PingPongDelay({
+          delayTime: '8n',
+          feedback: 0.3,
+          wet: 0.2
+        });
+
+        // Create warm filter
+        filterRef.current = new Tone.Filter({
+          frequency: 1200,
+          type: 'lowpass',
+          rolloff: -12
         });
 
         // Connect audio chain
         await reverbRef.current.generate();
         
-        synthRef.current.chain(reverbRef.current, Tone.Destination);
-        noiseRef.current.chain(filterRef.current, reverbRef.current, Tone.Destination);
+        // Pad chain: Pad -> Reverb -> Destination
+        padSynthRef.current.chain(filterRef.current, reverbRef.current, Tone.Destination);
+        
+        // Lead chain: Lead -> Delay -> Reverb -> Destination  
+        leadSynthRef.current.chain(delayRef.current, reverbRef.current, Tone.Destination);
+        
+        // Bass chain: Bass -> Reverb -> Destination
+        bassSynthRef.current.chain(reverbRef.current, Tone.Destination);
+
+        // Set volumes for balanced mix
+        padSynthRef.current.volume.value = -12;
+        leadSynthRef.current.volume.value = -18;
+        bassSynthRef.current.volume.value = -20;
 
         setIsReady(true);
-        console.log('Audio engine initialized successfully');
+        console.log('Musical ambient engine initialized successfully');
       } catch (error) {
         console.error('Failed to initialize audio:', error);
       }
@@ -64,80 +112,124 @@ export const useAudioEngine = ({ mode, isPlaying }: AudioEngineConfig) => {
 
     return () => {
       // Cleanup
-      synthRef.current?.dispose();
-      noiseRef.current?.dispose();
+      padSynthRef.current?.dispose();
+      leadSynthRef.current?.dispose();
+      bassSynthRef.current?.dispose();
       filterRef.current?.dispose();
       reverbRef.current?.dispose();
-      sequenceRef.current?.dispose();
+      delayRef.current?.dispose();
+      padSequenceRef.current?.dispose();
+      leadSequenceRef.current?.dispose();
+      bassSequenceRef.current?.dispose();
     };
   }, []);
 
-  // Generate soundscape based on mode
+  // Generate beautiful musical soundscape based on mode
   const generateSoundscape = async (selectedMode: string) => {
-    if (!synthRef.current || !noiseRef.current || !filterRef.current) return;
+    if (!padSynthRef.current || !leadSynthRef.current || !bassSynthRef.current) return;
 
-    console.log(`Generating soundscape for mode: ${selectedMode}`);
+    console.log(`Generating musical soundscape for mode: ${selectedMode}`);
 
-    // Stop existing sequence
-    if (sequenceRef.current) {
-      sequenceRef.current.stop();
-      sequenceRef.current.dispose();
+    // Stop existing sequences
+    if (padSequenceRef.current) {
+      padSequenceRef.current.stop();
+      padSequenceRef.current.dispose();
+    }
+    if (leadSequenceRef.current) {
+      leadSequenceRef.current.stop();
+      leadSequenceRef.current.dispose();
+    }
+    if (bassSequenceRef.current) {
+      bassSequenceRef.current.stop();
+      bassSequenceRef.current.dispose();
     }
 
     const modeConfigs = {
       focus: {
-        chords: ['C4', 'G4', 'Am', 'F4'],
-        filterFreq: 800,
-        noiseVolume: -25,
-        synthVolume: -15,
-        tempo: '2n'
+        padChords: [['C4', 'E4', 'G4'], ['Am', 'C5', 'E5'], ['F4', 'A4', 'C5'], ['G4', 'B4', 'D5']],
+        leadNotes: ['G5', 'E5', 'C5', 'D5', 'F5', 'E5', 'D5', 'C5'],
+        bassNotes: ['C2', 'A1', 'F1', 'G1'],
+        padTempo: '1n',
+        leadTempo: '4n',
+        bassTempo: '2n',
+        filterFreq: 1000
       },
       relax: {
-        chords: ['Em', 'C4', 'G4', 'D4'],
-        filterFreq: 300,
-        noiseVolume: -20,
-        synthVolume: -12,
-        tempo: '1n'
+        padChords: [['Em', 'G4', 'B4'], ['C4', 'E4', 'G4'], ['Am', 'C5', 'E5'], ['D4', 'F#4', 'A4']],
+        leadNotes: ['B4', 'G4', 'E4', 'G4', 'D5', 'B4', 'A4', 'G4'],
+        bassNotes: ['E1', 'C2', 'A1', 'D2'],
+        padTempo: '1n.',
+        leadTempo: '2n',
+        bassTempo: '1n',
+        filterFreq: 800
       },
       sleep: {
-        chords: ['Am', 'F4', 'C4', 'G4'],
-        filterFreq: 200,
-        noiseVolume: -15,
-        synthVolume: -18,
-        tempo: '1n.'
+        padChords: [['Am', 'C5', 'E5'], ['F4', 'A4', 'C5'], ['C4', 'E4', 'G4'], ['G4', 'B4', 'D5']],
+        leadNotes: ['C5', 'E5', 'G5', 'E5', 'D5', 'C5', 'B4', 'A4'],
+        bassNotes: ['A1', 'F1', 'C2', 'G1'],
+        padTempo: '2n',
+        leadTempo: '1n',
+        bassTempo: '2n.',
+        filterFreq: 600
       },
       move: {
-        chords: ['C4', 'F4', 'G4', 'Am'],
-        filterFreq: 1200,
-        noiseVolume: -30,
-        synthVolume: -10,
-        tempo: '4n'
+        padChords: [['C4', 'E4', 'G4'], ['F4', 'A4', 'C5'], ['G4', 'B4', 'D5'], ['Am', 'C5', 'E5']],
+        leadNotes: ['C5', 'D5', 'E5', 'F5', 'G5', 'F5', 'E5', 'D5'],
+        bassNotes: ['C2', 'F1', 'G1', 'A1'],
+        padTempo: '4n',
+        leadTempo: '8n',
+        bassTempo: '4n',
+        filterFreq: 1400
       },
       study: {
-        chords: ['Dm', 'G4', 'C4', 'Am'],
-        filterFreq: 600,
-        noiseVolume: -22,
-        synthVolume: -14,
-        tempo: '2n.'
+        padChords: [['Dm', 'F4', 'A4'], ['G4', 'B4', 'D5'], ['C4', 'E4', 'G4'], ['Am', 'C5', 'E5']],
+        leadNotes: ['D5', 'F5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5'],
+        bassNotes: ['D2', 'G1', 'C2', 'A1'],
+        padTempo: '2n.',
+        leadTempo: '4n.',
+        bassTempo: '2n',
+        filterFreq: 900
       }
     };
 
     const config = modeConfigs[selectedMode as keyof typeof modeConfigs] || modeConfigs.focus;
 
-    // Configure filter and volumes
-    filterRef.current.frequency.value = config.filterFreq;
-    noiseRef.current.volume.value = config.noiseVolume;
-    synthRef.current.volume.value = config.synthVolume;
+    // Configure filter
+    if (filterRef.current) {
+      filterRef.current.frequency.value = config.filterFreq;
+    }
 
-    // Create ambient chord progression
-    sequenceRef.current = new Tone.Sequence(
+    // Create ambient pad chord progression
+    padSequenceRef.current = new Tone.Sequence(
       (time, chord) => {
-        if (synthRef.current && isPlaying) {
-          synthRef.current.triggerAttackRelease(chord, '4n', time);
+        if (padSynthRef.current && isPlaying) {
+          padSynthRef.current.triggerAttackRelease(chord, '2n', time);
         }
       },
-      config.chords,
-      config.tempo
+      config.padChords,
+      config.padTempo
+    );
+
+    // Create gentle lead melody
+    leadSequenceRef.current = new Tone.Sequence(
+      (time, note) => {
+        if (leadSynthRef.current && isPlaying) {
+          leadSynthRef.current.triggerAttackRelease(note, '8n', time);
+        }
+      },
+      config.leadNotes,
+      config.leadTempo
+    );
+
+    // Create subtle bass line
+    bassSequenceRef.current = new Tone.Sequence(
+      (time, note) => {
+        if (bassSynthRef.current && isPlaying) {
+          bassSynthRef.current.triggerAttackRelease(note, '4n', time);
+        }
+      },
+      config.bassNotes,
+      config.bassTempo
     );
   };
 
@@ -146,7 +238,7 @@ export const useAudioEngine = ({ mode, isPlaying }: AudioEngineConfig) => {
     const handlePlayback = async () => {
       try {
         if (isPlaying) {
-          console.log('Starting audio playback...');
+          console.log('Starting musical ambient playback...');
           
           // Start Tone.js context
           if (Tone.context.state !== 'running') {
@@ -157,35 +249,42 @@ export const useAudioEngine = ({ mode, isPlaying }: AudioEngineConfig) => {
           // Generate soundscape for current mode
           await generateSoundscape(mode);
 
-          // Start ambient noise
-          if (noiseRef.current) {
-            noiseRef.current.start();
-          }
-
-          // Start sequence
-          if (sequenceRef.current) {
+          // Start all sequences
+          if (padSequenceRef.current) {
             Tone.Transport.start();
-            sequenceRef.current.start(0);
+            padSequenceRef.current.start(0);
+          }
+          
+          if (leadSequenceRef.current) {
+            leadSequenceRef.current.start('4n');
+          }
+          
+          if (bassSequenceRef.current) {
+            bassSequenceRef.current.start('2n');
           }
 
-          console.log('Audio playback started successfully');
+          console.log('Musical ambient playback started successfully');
         } else {
-          console.log('Stopping audio playback...');
+          console.log('Stopping musical ambient playback...');
           
-          // Stop everything
-          if (noiseRef.current && noiseRef.current.state === 'started') {
-            noiseRef.current.stop();
+          // Stop all sequences
+          if (padSequenceRef.current) {
+            padSequenceRef.current.stop();
           }
           
-          if (sequenceRef.current) {
-            sequenceRef.current.stop();
+          if (leadSequenceRef.current) {
+            leadSequenceRef.current.stop();
+          }
+          
+          if (bassSequenceRef.current) {
+            bassSequenceRef.current.stop();
           }
           
           Tone.Transport.stop();
-          console.log('Audio playback stopped');
+          console.log('Musical ambient playback stopped');
         }
       } catch (error) {
-        console.error('Error in audio playback:', error);
+        console.error('Error in musical ambient playback:', error);
       }
     };
 
