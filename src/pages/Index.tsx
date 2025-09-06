@@ -3,16 +3,16 @@ import { motion } from 'framer-motion';
 import { PulsingVisualization } from '@/components/PulsingVisualization';
 import { ModeSelector } from '@/components/ModeSelector';
 import { VibeSlider } from '@/components/VibeSlider';
+import { PlaybackControls } from '@/components/PlaybackControls';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
-import { Button } from '@/components/ui/button';
-import { Play, Pause } from 'lucide-react';
 
 const Index = () => {
   const [selectedMode, setSelectedMode] = useState('focus');
   const [isPlaying, setIsPlaying] = useState(false);
   const [vibeIntensity, setVibeIntensity] = useState(50);
+  const [timerActive, setTimerActive] = useState(false);
 
-  const { isReady } = useAudioEngine({ mode: selectedMode, isPlaying });
+  const { isReady, audioIntensity } = useAudioEngine({ mode: selectedMode, isPlaying });
 
   const handleTogglePlay = () => {
     setIsPlaying(prev => !prev);
@@ -20,6 +20,15 @@ const Index = () => {
 
   const handleModeChange = (mode: string) => {
     setSelectedMode(mode);
+  };
+
+  const handleReset = () => {
+    setIsPlaying(false);
+    // Add any reset logic here
+  };
+
+  const handleTimerToggle = () => {
+    setTimerActive(prev => !prev);
   };
 
   return (
@@ -56,7 +65,11 @@ const Index = () => {
 
         {/* Central visualization */}
         <div className="flex-1 flex flex-col items-center justify-center space-y-16">
-          <PulsingVisualization isPlaying={isPlaying} mode={selectedMode} />
+          <PulsingVisualization 
+            isPlaying={isPlaying} 
+            mode={selectedMode} 
+            audioIntensity={audioIntensity} 
+          />
           
           {/* Mode selector */}
           <motion.div
@@ -70,30 +83,16 @@ const Index = () => {
             />
           </motion.div>
 
-          {/* Play button */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleTogglePlay}
-              className="w-16 h-16 rounded-full border border-surface-3 bg-surface-1/50 backdrop-blur-sm hover:bg-surface-2/50 transition-all duration-300 hover:scale-105 hover:shadow-glow group"
+          {/* Loading indicator */}
+          {!isReady && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-xs text-muted-foreground text-center"
             >
-              {isPlaying ? (
-                <Pause className="w-6 h-6 text-foreground group-hover:text-primary transition-colors" />
-              ) : (
-                <Play className="w-6 h-6 text-foreground group-hover:text-primary transition-colors ml-0.5" />
-              )}
-            </Button>
-            {!isReady && (
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                Loading audio...
-              </p>
-            )}
-          </motion.div>
+              Loading audio engine...
+            </motion.div>
+          )}
 
           {/* Vibe slider */}
           <VibeSlider value={vibeIntensity} onChange={setVibeIntensity} />
@@ -111,6 +110,15 @@ const Index = () => {
           </button>
         </motion.footer>
       </div>
+
+      {/* Playback Controls */}
+      <PlaybackControls
+        isPlaying={isPlaying}
+        onTogglePlay={handleTogglePlay}
+        onReset={handleReset}
+        onTimerToggle={handleTimerToggle}
+        timerActive={timerActive}
+      />
     </div>
   );
 };

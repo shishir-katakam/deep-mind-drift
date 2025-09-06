@@ -3,10 +3,8 @@ import { Button } from '@/components/ui/button';
 
 const modes = [
   { id: 'focus', name: 'Focus', description: 'Deep concentration' },
-  { id: 'relax', name: 'Relax', description: 'Calm your mind' },
-  { id: 'sleep', name: 'Sleep', description: 'Rest peacefully' },
-  { id: 'move', name: 'Move', description: 'Active energy' },
-  { id: 'study', name: 'Study', description: 'Learning flow' }
+  { id: 'odyssey', name: 'Odyssey', description: 'Epic journey' },
+  { id: 'relax', name: 'Relax', description: 'Calm your mind' }
 ];
 
 interface ModeSelectorProps {
