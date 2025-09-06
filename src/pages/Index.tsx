@@ -11,7 +11,6 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [vibeIntensity, setVibeIntensity] = useState(50);
   const [timerActive, setTimerActive] = useState(false);
-
   const { isReady, audioIntensity } = useAudioEngine({ mode: selectedMode, isPlaying });
 
   const handleTogglePlay = () => {
@@ -45,9 +44,8 @@ const Index = () => {
         }}
         transition={{ duration: 20, repeat: Infinity }}
       />
-      
       {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 min-h-screen flex flex-col pb-32"> {/* Added pb-32 for bottom padding */}
         {/* Header */}
         <motion.header 
           className="text-center pt-16 pb-8"
@@ -62,7 +60,6 @@ const Index = () => {
             Ambient Soundscapes
           </p>
         </motion.header>
-
         {/* Central visualization */}
         <div className="flex-1 flex flex-col items-center justify-center space-y-16">
           <PulsingVisualization 
@@ -70,7 +67,6 @@ const Index = () => {
             mode={selectedMode} 
             audioIntensity={audioIntensity} 
           />
-          
           {/* Mode selector */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -82,7 +78,6 @@ const Index = () => {
               onModeChange={handleModeChange}
             />
           </motion.div>
-
           {/* Loading indicator */}
           {!isReady && (
             <motion.div
@@ -93,11 +88,9 @@ const Index = () => {
               Loading audio engine...
             </motion.div>
           )}
-
           {/* Vibe slider */}
           <VibeSlider value={vibeIntensity} onChange={setVibeIntensity} />
         </div>
-
         {/* Footer */}
         <motion.footer 
           className="text-center pb-8"
@@ -110,7 +103,6 @@ const Index = () => {
           </button>
         </motion.footer>
       </div>
-
       {/* Playback Controls */}
       <PlaybackControls
         isPlaying={isPlaying}
