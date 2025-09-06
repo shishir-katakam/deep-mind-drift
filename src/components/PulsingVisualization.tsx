@@ -4,52 +4,69 @@ import { useEffect, useState } from 'react';
 interface PulsingVisualizationProps {
   isPlaying: boolean;
   mode: string;
+  audioIntensity?: number;
 }
 
 const getModeColor = (mode: string) => {
   switch (mode) {
     case 'focus':
       return 'hsl(0, 0%, 96%)';
+    case 'odyssey':
+      return 'hsl(280, 100%, 85%)';
     case 'relax':
       return 'hsl(200, 100%, 80%)';
-    case 'sleep':
-      return 'hsl(260, 100%, 85%)';
-    case 'move':
-      return 'hsl(40, 100%, 75%)';
-    case 'study':
-      return 'hsl(120, 60%, 70%)';
     default:
       return 'hsl(0, 0%, 96%)';
   }
 };
 
-export const PulsingVisualization = ({ isPlaying, mode }: PulsingVisualizationProps) => {
-  const [audioIntensity, setAudioIntensity] = useState(0);
-  
-  useEffect(() => {
-    if (!isPlaying) {
-      setAudioIntensity(0);
-      return;
-    }
+const getModeAnimation = (mode: string) => {
+  switch (mode) {
+    case 'focus':
+      return {
+        duration: 2.5,
+        ringCount: 3,
+        particleCount: 6,
+        pulseScale: 0.08,
+        particleDistance: 25
+      };
+    case 'odyssey':
+      return {
+        duration: 1.8,
+        ringCount: 5,
+        particleCount: 12,
+        pulseScale: 0.15,
+        particleDistance: 35
+      };
+    case 'relax':
+      return {
+        duration: 4,
+        ringCount: 2,
+        particleCount: 4,
+        pulseScale: 0.05,
+        particleDistance: 20
+      };
+    default:
+      return {
+        duration: 2.5,
+        ringCount: 3,
+        particleCount: 6,
+        pulseScale: 0.08,
+        particleDistance: 25
+      };
+  }
+};
 
-    const interval = setInterval(() => {
-      // Simulate audio intensity with smooth variations
-      const baseIntensity = 0.3 + Math.sin(Date.now() * 0.001) * 0.1;
-      const randomVariation = Math.random() * 0.2;
-      setAudioIntensity(Math.max(0, Math.min(1, baseIntensity + randomVariation)));
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [isPlaying]);
-
+export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: PulsingVisualizationProps) => {
   const modeColor = getModeColor(mode);
+  const modeAnim = getModeAnimation(mode);
   const size = 200 + (audioIntensity * 60);
   const glowIntensity = 0.3 + (audioIntensity * 0.4);
 
   return (
     <div className="flex items-center justify-center h-96 relative">
       {/* Background rings */}
-      {[1, 2, 3].map((ring) => (
+      {Array.from({ length: modeAnim.ringCount }, (_, i) => i + 1).map((ring) => (
         <motion.div
           key={ring}
           className="absolute rounded-full border opacity-20"
@@ -57,16 +74,17 @@ export const PulsingVisualization = ({ isPlaying, mode }: PulsingVisualizationPr
             width: size + ring * 80,
             height: size + ring * 80,
             borderColor: modeColor,
-            borderWidth: 1,
+            borderWidth: mode === 'odyssey' ? 2 : 1,
           }}
           animate={{
-            scale: isPlaying ? [1, 1.02, 1] : 1,
-            opacity: isPlaying ? [0.1, 0.2, 0.1] : 0.05,
+            scale: isPlaying ? [1, 1.02 + ring * 0.01, 1] : 1,
+            opacity: isPlaying ? [0.1, 0.2 + ring * 0.05, 0.1] : 0.05,
+            rotate: mode === 'odyssey' ? [0, 360] : 0,
           }}
           transition={{
-            duration: 3 + ring * 0.5,
+            duration: modeAnim.duration + ring * 0.5,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: mode === 'focus' ? "easeInOut" : mode === 'odyssey' ? "linear" : "easeOut",
           }}
         />
       ))}
@@ -81,20 +99,23 @@ export const PulsingVisualization = ({ isPlaying, mode }: PulsingVisualizationPr
           boxShadow: `0 0 ${40 + audioIntensity * 60}px ${modeColor}${Math.round(glowIntensity * 128).toString(16).padStart(2, '0')}`,
         }}
         animate={{
-          scale: isPlaying ? [1, 1 + audioIntensity * 0.1, 1] : 1,
+          scale: isPlaying ? [1, 1 + audioIntensity * modeAnim.pulseScale, 1] : 1,
+          rotate: mode === 'odyssey' ? [0, 360] : 0,
         }}
         transition={{
-          duration: 0.8,
+          duration: modeAnim.duration * 0.4,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: mode === 'focus' ? "easeInOut" : mode === 'odyssey' ? "linear" : "easeOut",
         }}
       >
         {/* Inner particle effects */}
         <div className="absolute inset-0">
-          {[...Array(8)].map((_, i) => (
+          {Array.from({ length: modeAnim.particleCount }, (_, i) => (
             <motion.div
               key={i}
-              className="absolute w-1 h-1 rounded-full opacity-60"
+              className={`absolute rounded-full opacity-60 ${
+                mode === 'odyssey' ? 'w-2 h-2' : 'w-1 h-1'
+              }`}
               style={{
                 backgroundColor: modeColor,
                 left: '50%',
@@ -102,18 +123,19 @@ export const PulsingVisualization = ({ isPlaying, mode }: PulsingVisualizationPr
               }}
               animate={{
                 x: isPlaying 
-                  ? [0, Math.cos(i * Math.PI / 4) * (30 + audioIntensity * 20)]
+                  ? [0, Math.cos(i * Math.PI / modeAnim.particleCount * 2) * (modeAnim.particleDistance + audioIntensity * 20)]
                   : 0,
                 y: isPlaying 
-                  ? [0, Math.sin(i * Math.PI / 4) * (30 + audioIntensity * 20)]
+                  ? [0, Math.sin(i * Math.PI / modeAnim.particleCount * 2) * (modeAnim.particleDistance + audioIntensity * 20)]
                   : 0,
                 opacity: isPlaying ? [0.6, 0.8, 0.6] : 0,
+                scale: mode === 'odyssey' ? [1, 1.5, 1] : [1, 1.2, 1],
               }}
               transition={{
-                duration: 2,
+                duration: modeAnim.duration,
                 repeat: Infinity,
-                delay: i * 0.1,
-                ease: "easeInOut",
+                delay: i * (modeAnim.duration / modeAnim.particleCount),
+                ease: mode === 'focus' ? "easeInOut" : mode === 'odyssey' ? "easeInOut" : "easeOut",
               }}
             />
           ))}
@@ -129,13 +151,13 @@ export const PulsingVisualization = ({ isPlaying, mode }: PulsingVisualizationPr
           backgroundColor: modeColor,
         }}
         animate={{
-          scale: isPlaying ? [1, 1.5, 1] : 1,
+          scale: isPlaying ? [1, 1.5 + audioIntensity * 0.5, 1] : 1,
           opacity: isPlaying ? [0.8, 1, 0.8] : 0.5,
         }}
         transition={{
-          duration: 1.2,
+          duration: modeAnim.duration * 0.6,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: mode === 'focus' ? "easeInOut" : mode === 'odyssey' ? "linear" : "easeOut",
         }}
       />
     </div>
