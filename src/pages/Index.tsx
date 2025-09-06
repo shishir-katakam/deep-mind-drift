@@ -1,86 +1,115 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { PulsingVisualization } from '@/components/PulsingVisualization';
 import { ModeSelector } from '@/components/ModeSelector';
-import { PlaybackControls } from '@/components/PlaybackControls';
-import { GenerativeVisual } from '@/components/GenerativeVisual';
+import { VibeSlider } from '@/components/VibeSlider';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
+import { Button } from '@/components/ui/button';
+import { Play, Pause } from 'lucide-react';
 
 const Index = () => {
   const [selectedMode, setSelectedMode] = useState('focus');
   const [isPlaying, setIsPlaying] = useState(false);
-  const [timerActive, setTimerActive] = useState(false);
+  const [vibeIntensity, setVibeIntensity] = useState(50);
 
-  // Initialize audio engine
   const { isReady } = useAudioEngine({ mode: selectedMode, isPlaying });
 
   const handleTogglePlay = () => {
-    setIsPlaying(!isPlaying);
+    setIsPlaying(prev => !prev);
   };
 
-  const handleReset = () => {
-    setIsPlaying(false);
-  };
-
-  const handleTimerToggle = () => {
-    setTimerActive(!timerActive);
+  const handleModeChange = (mode: string) => {
+    setSelectedMode(mode);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-background relative overflow-hidden">
-      {/* Background Visual Layer */}
-      <div className="absolute inset-0">
-        <GenerativeVisual mode={selectedMode} isPlaying={isPlaying} />
-      </div>
-
-      {/* Main Content */}
+    <div className="min-h-screen bg-gradient-bg overflow-hidden relative">
+      {/* Subtle background animation */}
+      <motion.div 
+        className="absolute inset-0 opacity-30"
+        animate={{
+          background: [
+            "radial-gradient(ellipse at 20% 50%, hsl(0, 0%, 8%) 0%, transparent 50%)",
+            "radial-gradient(ellipse at 80% 50%, hsl(0, 0%, 8%) 0%, transparent 50%)",
+            "radial-gradient(ellipse at 20% 50%, hsl(0, 0%, 8%) 0%, transparent 50%)"
+          ]
+        }}
+        transition={{ duration: 20, repeat: Infinity }}
+      />
+      
+      {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
-        <header className="p-6">
-          <div className="max-w-md mx-auto">
-            <h1 className="text-2xl font-light text-center text-foreground mb-2">
-              Ambient
-            </h1>
-            <p className="text-sm text-muted-foreground text-center">
-              Personalized soundscapes for focus and calm
-            </p>
-          </div>
-        </header>
+        <motion.header 
+          className="text-center pt-16 pb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-3xl font-light text-foreground tracking-[0.2em] font-mono">
+            NIORA
+          </h1>
+          <p className="text-xs text-muted-foreground mt-2 tracking-wide uppercase">
+            Ambient Soundscapes
+          </p>
+        </motion.header>
 
-        {/* Central Mode Selection */}
-        <div className="flex-1 flex items-center justify-center px-6">
-          <div className="w-full max-w-md">
-            <div className="mb-8 text-center">
-              <h2 className="text-lg font-medium text-foreground mb-2">
-                Choose Your Mode
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {selectedMode === 'focus' && 'Deep concentration and flow state'}
-                {selectedMode === 'relax' && 'Calm your mind and reduce stress'}
-                {selectedMode === 'sleep' && 'Peaceful rest and recovery'}
-                {selectedMode === 'move' && 'Active energy and motivation'}
-                {selectedMode === 'study' && 'Learning focus and retention'}
-              </p>
-              {!isReady && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Loading audio engine...
-                </p>
-              )}
-            </div>
-            
+        {/* Central visualization */}
+        <div className="flex-1 flex flex-col items-center justify-center space-y-16">
+          <PulsingVisualization isPlaying={isPlaying} mode={selectedMode} />
+          
+          {/* Mode selector */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             <ModeSelector 
               selectedMode={selectedMode} 
-              onModeChange={setSelectedMode} 
+              onModeChange={handleModeChange}
             />
-          </div>
+          </motion.div>
+
+          {/* Play button */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleTogglePlay}
+              className="w-16 h-16 rounded-full border border-surface-3 bg-surface-1/50 backdrop-blur-sm hover:bg-surface-2/50 transition-all duration-300 hover:scale-105 hover:shadow-glow group"
+            >
+              {isPlaying ? (
+                <Pause className="w-6 h-6 text-foreground group-hover:text-primary transition-colors" />
+              ) : (
+                <Play className="w-6 h-6 text-foreground group-hover:text-primary transition-colors ml-0.5" />
+              )}
+            </Button>
+            {!isReady && (
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                Loading audio...
+              </p>
+            )}
+          </motion.div>
+
+          {/* Vibe slider */}
+          <VibeSlider value={vibeIntensity} onChange={setVibeIntensity} />
         </div>
 
-        {/* Playback Controls */}
-        <PlaybackControls
-          isPlaying={isPlaying}
-          onTogglePlay={handleTogglePlay}
-          onReset={handleReset}
-          onTimerToggle={handleTimerToggle}
-          timerActive={timerActive}
-        />
+        {/* Footer */}
+        <motion.footer 
+          className="text-center pb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          <button className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            About / Licenses
+          </button>
+        </motion.footer>
       </div>
     </div>
   );
