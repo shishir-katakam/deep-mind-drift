@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 
 const modes = [
@@ -16,26 +16,24 @@ interface ModeSelectorProps {
 
 export const ModeSelector = ({ selectedMode, onModeChange }: ModeSelectorProps) => {
   return (
-    <div className="space-y-3">
+    <div className="flex flex-wrap justify-center gap-3">
       {modes.map((mode) => (
-        <Button
-          key={mode.id}
-          variant={selectedMode === mode.id ? "default" : "ghost"}
-          className={`
-            w-full justify-start text-left transition-all duration-300 ease-out
-            ${selectedMode === mode.id 
-              ? 'bg-surface-2 text-foreground border border-surface-3 shadow-glow' 
-              : 'bg-surface-1/50 text-muted-foreground hover:bg-surface-2/70 hover:text-foreground'
-            }
-            backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]
-          `}
-          onClick={() => onModeChange(mode.id)}
-        >
-          <div>
-            <div className="font-medium">{mode.name}</div>
-            <div className="text-xs opacity-70">{mode.description}</div>
-          </div>
-        </Button>
+        <motion.div key={mode.id} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            variant="ghost"
+            className={`
+              px-6 py-3 rounded-full transition-all duration-300
+              ${selectedMode === mode.id 
+                ? 'bg-surface-2 text-foreground border border-surface-3 shadow-glow' 
+                : 'bg-surface-1/30 text-muted-foreground hover:bg-surface-2/50 hover:text-foreground border border-surface-2/30'
+              }
+              backdrop-blur-sm font-medium text-sm
+            `}
+            onClick={() => onModeChange(mode.id)}
+          >
+            {mode.name}
+          </Button>
+        </motion.div>
       ))}
     </div>
   );
