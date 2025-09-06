@@ -30,18 +30,22 @@ export const useAudioEngine = ({ mode, isPlaying }: AudioEngineConfig) => {
         `${GITHUB_BASE_URL}/focus/track5.mp3`,
         `${GITHUB_BASE_URL}/focus/track6.mp3`,
         `${GITHUB_BASE_URL}/focus/track7.mp3`,
+        `${GITHUB_BASE_URL}/focus/track8.mp3`,
+        `${GITHUB_BASE_URL}/focus/track9.mp3`,
+        `${GITHUB_BASE_URL}/focus/track10.mp3`,
+        `${GITHUB_BASE_URL}/focus/track11.mp3`,
       ],
       odyssey: [
         `${GITHUB_BASE_URL}/odyssey/track1.mp3`,
         `${GITHUB_BASE_URL}/odyssey/track2.mp3`,
         `${GITHUB_BASE_URL}/odyssey/track3.mp3`,
+        `${GITHUB_BASE_URL}/focus/track4.mp3`,
       ],
       relax: [
         `${GITHUB_BASE_URL}/relax/track1.mp3`,
         `${GITHUB_BASE_URL}/relax/track2.mp3`,
         `${GITHUB_BASE_URL}/relax/track3.mp3`,
         `${GITHUB_BASE_URL}/relax/track4.mp3`,
-        `${GITHUB_BASE_URL}/relax/track5.mp3`,
       ]
     };
 
