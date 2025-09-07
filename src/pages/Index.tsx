@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { PulsingVisualization } from '@/components/PulsingVisualization';
 import { ModeSelector } from '@/components/ModeSelector';
@@ -11,10 +11,53 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [vibeIntensity, setVibeIntensity] = useState(50);
   const [timerActive, setTimerActive] = useState(false);
+  const [timerMinutes, setTimerMinutes] = useState(25); // Default to 25 minutes
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { isReady, audioIntensity } = useAudioEngine({ mode: selectedMode, isPlaying });
 
+  // Timer functionality
+  useEffect(() => {
+    if (timerActive && isPlaying && timeRemaining > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            // Timer finished
+            setIsPlaying(false);
+            setTimerActive(false);
+            setSessionStartTime(null);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [timerActive, isPlaying, timeRemaining]);
+
   const handleTogglePlay = () => {
-    setIsPlaying(prev => !prev);
+    const newPlayState = !isPlaying;
+    setIsPlaying(newPlayState);
+    
+    if (newPlayState && timerActive && timeRemaining === 0) {
+      // Start new timer session
+      const duration = timerMinutes * 60;
+      setTimeRemaining(duration);
+      setSessionStartTime(Date.now());
+    } else if (newPlayState && !sessionStartTime) {
+      setSessionStartTime(Date.now());
+    }
   };
 
   const handleModeChange = (mode: string) => {
@@ -23,11 +66,32 @@ const Index = () => {
 
   const handleReset = () => {
     setIsPlaying(false);
-    // Add any reset logic here
+    setTimerActive(false);
+    setTimeRemaining(0);
+    setSessionStartTime(null);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
   };
 
   const handleTimerToggle = () => {
-    setTimerActive(prev => !prev);
+    if (!timerActive) {
+      // Activate timer
+      const duration = timerMinutes * 60;
+      setTimeRemaining(duration);
+      setTimerActive(true);
+    } else {
+      // Deactivate timer
+      setTimerActive(false);
+      setTimeRemaining(0);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -90,6 +154,23 @@ const Index = () => {
           )}
           {/* Vibe slider */}
           <VibeSlider value={vibeIntensity} onChange={setVibeIntensity} />
+          
+          {/* Timer display */}
+          {timerActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="text-center"
+            >
+              <div className="text-2xl font-mono text-foreground/80 mb-2">
+                {formatTime(timeRemaining)}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {timeRemaining > 0 ? 'Session Active' : 'Session Complete'}
+              </div>
+            </motion.div>
+          )}
         </div>
         {/* Footer */}
         <motion.footer 
