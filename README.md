@@ -1,4 +1,4 @@
-# 🎶 NIORA – Ambient Soundscapes
+# 🎶 NIORA – Ambient Soundscapes (OPEN SOURCE)
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -47,3 +47,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 If you like NIORA, don’t forget to give it a star on GitHub!
 
 ## Thanks to [Amulya Ma'am](https://mgit.ac.in/wp-content/uploads/2022/05/Amulya_it.pdf)
+
+
+The songs are taken from the following sources and few were created by me using AI.
+sources:
+1.[Pixabay](https://pixabay.com)
+2.[mixkit](https://mixkit.co/free-stock-music)
+
