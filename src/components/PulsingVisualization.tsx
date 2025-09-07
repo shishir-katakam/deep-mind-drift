@@ -12,9 +12,9 @@ const getModeColor = (mode: string) => {
     case 'focus':
       return 'hsl(0, 0%, 96%)';
     case 'odyssey':
-      return 'hsl(280, 100%, 85%)';
+      return 'hsl(0, 0%, 90%)';
     case 'relax':
-      return 'hsl(200, 100%, 80%)';
+      return 'hsl(0, 0%, 85%)';
     default:
       return 'hsl(0, 0%, 96%)';
   }
@@ -97,27 +97,54 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Precision grid lines */}
+      {/* Traveling lines that converge to center */}
       {Array.from({ length: 8 }, (_, i) => (
         <motion.div
           key={`line-${i}`}
-          className="absolute bg-white/10"
+          className="absolute bg-white/30"
           style={{
-            width: i % 2 === 0 ? size + 100 : 2,
-            height: i % 2 === 0 ? 2 : size + 100,
+            width: 2,
+            height: size * 0.8,
             left: '50%',
             top: '50%',
-            transform: 'translate(-50%, -50%)',
+            transformOrigin: 'center bottom',
+            transform: `translate(-50%, -100%) rotate(${i * 45}deg)`,
           }}
           animate={{
-            rotate: isPlaying ? [0, 360] : 0,
-            opacity: isPlaying ? [0.1, 0.4, 0.1] : 0,
+            scaleY: isPlaying ? [0, 1, 0.8, 1] : 0,
+            opacity: isPlaying ? [0, 0.8, 0.3, 0.8] : 0,
           }}
           transition={{
-            duration: modeAnim.duration * 2,
+            duration: modeAnim.duration,
             repeat: Infinity,
-            delay: i * 0.3,
+            delay: i * 0.1,
             ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      {/* Additional traveling beams */}
+      {Array.from({ length: 16 }, (_, i) => (
+        <motion.div
+          key={`beam-${i}`}
+          className="absolute bg-gradient-to-b from-white/60 to-transparent"
+          style={{
+            width: 1,
+            height: size * 0.6,
+            left: '50%',
+            top: '50%',
+            transformOrigin: 'center bottom',
+            transform: `translate(-50%, -100%) rotate(${i * 22.5}deg)`,
+          }}
+          animate={{
+            scaleY: isPlaying ? [0, 1, 0] : 0,
+            opacity: isPlaying ? [0, 0.6, 0] : 0,
+          }}
+          transition={{
+            duration: modeAnim.duration * 1.5,
+            repeat: Infinity,
+            delay: i * 0.05,
+            ease: "easeOut",
           }}
         />
       ))}
@@ -147,15 +174,14 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
 
   const renderOdysseyAnimation = () => (
     <div className="flex items-center justify-center h-96 relative">
-      {/* Cosmic spiral arms */}
+      {/* Cosmic spiral arms - monochrome */}
       {Array.from({ length: 6 }, (_, i) => (
         <motion.div
           key={`spiral-${i}`}
-          className="absolute border-dashed"
+          className="absolute border-dashed border-white/20"
           style={{
             width: size + i * 40,
             height: size + i * 40,
-            border: `2px dashed ${modeColor}`,
             borderRadius: '50%',
           }}
           animate={{
@@ -171,24 +197,49 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Orbiting energy nodes */}
+      {/* Traveling lines from edges to center */}
       {Array.from({ length: 12 }, (_, i) => (
         <motion.div
-          key={`node-${i}`}
-          className="absolute w-3 h-3 rounded-full"
+          key={`traveling-line-${i}`}
+          className="absolute bg-white/40"
           style={{
-            backgroundColor: modeColor,
+            width: 1,
+            height: size * 0.9,
+            left: '50%',
+            top: '50%',
+            transformOrigin: 'center bottom',
+            transform: `translate(-50%, -100%) rotate(${i * 30}deg)`,
+          }}
+          animate={{
+            scaleY: isPlaying ? [0, 1, 0.5, 1] : 0,
+            opacity: isPlaying ? [0, 0.8, 0.2, 0.8] : 0,
+          }}
+          transition={{
+            duration: modeAnim.duration * 0.8,
+            repeat: Infinity,
+            delay: i * 0.08,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      {/* Orbiting dots - monochrome */}
+      {Array.from({ length: 8 }, (_, i) => (
+        <motion.div
+          key={`node-${i}`}
+          className="absolute w-2 h-2 rounded-full bg-white/70"
+          style={{
             left: '50%',
             top: '50%',
           }}
           animate={{
             x: isPlaying 
-              ? [0, Math.cos(i * Math.PI / 6) * (size * 0.8 + audioIntensity * 40)]
+              ? [0, Math.cos(i * Math.PI / 4) * (size * 0.6 + audioIntensity * 30)]
               : 0,
             y: isPlaying 
-              ? [0, Math.sin(i * Math.PI / 6) * (size * 0.8 + audioIntensity * 40)]
+              ? [0, Math.sin(i * Math.PI / 4) * (size * 0.6 + audioIntensity * 30)]
               : 0,
-            scale: isPlaying ? [1, 2, 1] : 0,
+            scale: isPlaying ? [1, 1.5, 1] : 0,
             opacity: isPlaying ? [0.6, 1, 0.6] : 0,
           }}
           transition={{
@@ -200,7 +251,7 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Central cosmic core */}
+      {/* Central core - monochrome */}
       <motion.div
         className="absolute rounded-full"
         style={{
@@ -224,7 +275,7 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
 
   const renderRelaxAnimation = () => (
     <div className="flex items-center justify-center h-96 relative">
-      {/* Organic flowing waves */}
+      {/* Organic flowing waves - monochrome */}
       {Array.from({ length: 5 }, (_, i) => (
         <motion.div
           key={`wave-${i}`}
@@ -249,15 +300,40 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Floating organic particles */}
+      {/* Gentle traveling lines converging to center */}
+      {Array.from({ length: 6 }, (_, i) => (
+        <motion.div
+          key={`gentle-line-${i}`}
+          className="absolute bg-white/25"
+          style={{
+            width: 1,
+            height: size * 0.7,
+            left: '50%',
+            top: '50%',
+            transformOrigin: 'center bottom',
+            transform: `translate(-50%, -100%) rotate(${i * 60}deg)`,
+          }}
+          animate={{
+            scaleY: isPlaying ? [0, 0.8, 0.3, 0.8] : 0,
+            opacity: isPlaying ? [0, 0.5, 0.1, 0.5] : 0,
+          }}
+          transition={{
+            duration: modeAnim.duration * 1.2,
+            repeat: Infinity,
+            delay: i * 0.3,
+            ease: "easeOut",
+          }}
+        />
+      ))}
+
+      {/* Floating particles - monochrome */}
       {Array.from({ length: 6 }, (_, i) => (
         <motion.div
           key={`organic-${i}`}
-          className="absolute rounded-full opacity-40"
+          className="absolute rounded-full bg-white/40"
           style={{
-            width: 4 + (i % 3),
-            height: 4 + (i % 3),
-            backgroundColor: modeColor,
+            width: 3 + (i % 2),
+            height: 3 + (i % 2),
             left: '50%',
             top: '50%',
           }}
@@ -280,7 +356,7 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Central breathing core */}
+      {/* Central breathing core - monochrome */}
       <motion.div
         className="absolute rounded-full"
         style={{

@@ -188,7 +188,6 @@ const Index = () => {
       <PlaybackControls
         isPlaying={isPlaying}
         onTogglePlay={handleTogglePlay}
-        onReset={handleReset}
         onTimerToggle={handleTimerToggle}
         timerActive={timerActive}
       />

@@ -235,7 +235,7 @@ export const useAudioEngine = ({ mode, isPlaying }: AudioEngineConfig) => {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, isReady]);
+  }, [isPlaying, isReady, mode]);
 
   // Handle mode changes with crossfade
   useEffect(() => {
