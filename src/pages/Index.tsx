@@ -185,7 +185,7 @@ const Index = () => {
     href="https://github.com/shishir-katakam/niora"
     target="_blank"
     rel="noopener noreferrer"
-    className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all duration-300 w-max mx-auto"
+    className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all duration-300 w-max mx-auto mt-8"
   >
     {/* GitHub Logo */}
     <svg
