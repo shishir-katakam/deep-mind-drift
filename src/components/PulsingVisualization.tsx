@@ -97,57 +97,6 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Traveling lines that converge to center */}
-      {Array.from({ length: 8 }, (_, i) => (
-        <motion.div
-          key={`line-${i}`}
-          className="absolute bg-white/30"
-          style={{
-            width: 2,
-            height: size * 0.8,
-            left: '50%',
-            top: '50%',
-            transformOrigin: 'center bottom',
-            transform: `translate(-50%, -100%) rotate(${i * 45}deg)`,
-          }}
-          animate={{
-            scaleY: isPlaying ? [0, 1, 0.8, 1] : 0,
-            opacity: isPlaying ? [0, 0.8, 0.3, 0.8] : 0,
-          }}
-          transition={{
-            duration: modeAnim.duration,
-            repeat: Infinity,
-            delay: i * 0.1,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {/* Additional traveling beams */}
-      {Array.from({ length: 16 }, (_, i) => (
-        <motion.div
-          key={`beam-${i}`}
-          className="absolute bg-gradient-to-b from-white/60 to-transparent"
-          style={{
-            width: 1,
-            height: size * 0.6,
-            left: '50%',
-            top: '50%',
-            transformOrigin: 'center bottom',
-            transform: `translate(-50%, -100%) rotate(${i * 22.5}deg)`,
-          }}
-          animate={{
-            scaleY: isPlaying ? [0, 1, 0] : 0,
-            opacity: isPlaying ? [0, 0.6, 0] : 0,
-          }}
-          transition={{
-            duration: modeAnim.duration * 1.5,
-            repeat: Infinity,
-            delay: i * 0.05,
-            ease: "easeOut",
-          }}
-        />
-      ))}
 
       {/* Central pulsing square */}
       <motion.div
@@ -197,31 +146,6 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Traveling lines from edges to center */}
-      {Array.from({ length: 12 }, (_, i) => (
-        <motion.div
-          key={`traveling-line-${i}`}
-          className="absolute bg-white/40"
-          style={{
-            width: 1,
-            height: size * 0.9,
-            left: '50%',
-            top: '50%',
-            transformOrigin: 'center bottom',
-            transform: `translate(-50%, -100%) rotate(${i * 30}deg)`,
-          }}
-          animate={{
-            scaleY: isPlaying ? [0, 1, 0.5, 1] : 0,
-            opacity: isPlaying ? [0, 0.8, 0.2, 0.8] : 0,
-          }}
-          transition={{
-            duration: modeAnim.duration * 0.8,
-            repeat: Infinity,
-            delay: i * 0.08,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
 
       {/* Orbiting dots - monochrome */}
       {Array.from({ length: 8 }, (_, i) => (
@@ -300,31 +224,6 @@ export const PulsingVisualization = ({ isPlaying, mode, audioIntensity = 0 }: Pu
         />
       ))}
 
-      {/* Gentle traveling lines converging to center */}
-      {Array.from({ length: 6 }, (_, i) => (
-        <motion.div
-          key={`gentle-line-${i}`}
-          className="absolute bg-white/25"
-          style={{
-            width: 1,
-            height: size * 0.7,
-            left: '50%',
-            top: '50%',
-            transformOrigin: 'center bottom',
-            transform: `translate(-50%, -100%) rotate(${i * 60}deg)`,
-          }}
-          animate={{
-            scaleY: isPlaying ? [0, 0.8, 0.3, 0.8] : 0,
-            opacity: isPlaying ? [0, 0.5, 0.1, 0.5] : 0,
-          }}
-          transition={{
-            duration: modeAnim.duration * 1.2,
-            repeat: Infinity,
-            delay: i * 0.3,
-            ease: "easeOut",
-          }}
-        />
-      ))}
 
       {/* Floating particles - monochrome */}
       {Array.from({ length: 6 }, (_, i) => (
