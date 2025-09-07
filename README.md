@@ -46,4 +46,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 If you like NIORA, don’t forget to give it a star on GitHub
 
-# Thanks to [Amulya Ma'am](https://mgit.ac.in/wp-content/uploads/2022/05/Amulya_it.pdf)
+## Thanks to [Amulya Ma'am](https://mgit.ac.in/wp-content/uploads/2022/05/Amulya_it.pdf)
