@@ -19,9 +19,11 @@ Inspired by apps like *Endel* and *Moodist*, NIORA blends **minimalist design** 
 
 **Screenshots:**
 
-![NIORA Screenshot](https://raw.githubusercontent.com/shishir-katakam/niora/main/public/image.png)
-![NIORA Screenshot](https://raw.githubusercontent.com/shishir-katakam/niora/main/public/image_copy.png)
-![NIORA Screenshot](https://raw.githubusercontent.com/shishir-katakam/niora/main/public/imagecopy.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/shishir-katakam/niora/main/public/image.png" alt="NIORA Screenshot 1" width="600"/>
+  <img src="https://raw.githubusercontent.com/shishir-katakam/niora/main/public/image_copy.png" alt="NIORA Screenshot 2" width="600"/>
+  <img src="https://raw.githubusercontent.com/shishir-katakam/niora/main/public/imagecopy.png" alt="NIORA Screenshot 3" width="600"/>
+</p>
 
 **Tech Stack**
 
@@ -44,6 +46,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-If you like NIORA, don’t forget to give it a star on GitHub!
+If you like NIORA, don’t forget to give it a star on GitHub
 
 # Thanks to [Amulya Ma'am](https://mgit.ac.in/wp-content/uploads/2022/05/Amulya_it.pdf)
