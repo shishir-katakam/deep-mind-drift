@@ -152,8 +152,10 @@ const Index = () => {
               Loading audio engine...
             </motion.div>
           )}
-          {/* Vibe slider */}
-          <VibeSlider value={vibeIntensity} onChange={setVibeIntensity} />
+          {/* Vibe slider (hidden for now)
+<VibeSlider value={vibeIntensity} onChange={setVibeIntensity} />
+*/}
+
           
           {/* Timer display */}
           {timerActive && (
@@ -179,9 +181,15 @@ const Index = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <button className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-            About / Licenses
-          </button>
+          <a
+  href="https://github.com/shishir-katakam/deep-mind-drift"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="px-4 py-2 text-sm font-medium rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all duration-300"
+>
+  Liquid Glass
+</a>
+
         </motion.footer>
       </div>
       {/* Playback Controls */}
