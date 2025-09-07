@@ -176,21 +176,45 @@ const Index = () => {
         </div>
         {/* Footer */}
         <motion.footer 
-          className="text-center pb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <a
-  href="https://github.com/shishir-katakam/niora"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="px-4 py-2 text-sm font-medium rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all duration-300"
+  className="text-center pb-8"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.8, delay: 0.6 }}
 >
-  Github
-</a>
+  <a
+    href="https://github.com/shishir-katakam/niora"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all duration-300 w-max mx-auto"
+  >
+    {/* GitHub Logo */}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        fillRule="evenodd"
+        d="M12 0C5.373 0 0 5.373 0 12c0 5.303 
+           3.438 9.8 8.207 11.387.6.111.793-.261.793-.577
+           0-.285-.011-1.04-.016-2.04-3.338.726-4.042-1.61-4.042-1.61
+           -.546-1.387-1.333-1.757-1.333-1.757-1.089-.745.083-.73.083-.73
+           1.205.085 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998
+           .108-.775.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.93
+           0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 
+           1.008-.322 3.301 1.23a11.48 11.48 0 0 1 3.003-.404c1.018.005 
+           2.043.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23 
+           .655 1.653.243 2.873.119 3.176.77.84 1.235 1.911 
+           1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 
+           0 1.606-.015 2.896-.015 3.289 0 .319.192.694.799.576C20.565 
+           21.796 24 17.299 24 12c0-6.627-5.373-12-12-12z"
+      />
+    </svg>
+    Github
+  </a>
+</motion.footer>
 
-        </motion.footer>
       </div>
       {/* Playback Controls */}
       <PlaybackControls
