@@ -182,12 +182,12 @@ const Index = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <a
-  href="https://github.com/shishir-katakam/deep-mind-drift"
+  href="https://github.com/shishir-katakam/niora"
   target="_blank"
   rel="noopener noreferrer"
   className="px-4 py-2 text-sm font-medium rounded-xl border border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all duration-300"
 >
-  Liquid Glass
+  Github
 </a>
 
         </motion.footer>
