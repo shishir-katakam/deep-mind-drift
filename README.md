@@ -21,8 +21,6 @@ Inspired by apps like *Endel* and *Moodist*, NIORA blends **minimalist design** 
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/shishir-katakam/niora/main/public/image.png" alt="NIORA Screenshot 1" width="600"/>
-  <img src="https://raw.githubusercontent.com/shishir-katakam/niora/main/public/image_copy.png" alt="NIORA Screenshot 2" width="600"/>
-  <img src="https://raw.githubusercontent.com/shishir-katakam/niora/main/public/imagecopy.png" alt="NIORA Screenshot 3" width="600"/>
 </p>
 
 **Tech Stack**
