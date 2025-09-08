@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 NIORA is a calming **ambient soundscape web app** designed to help you **focus, relax, or sleep**.  
-Inspired by apps like *Endel* and *Moodist*, NIORA blends **minimalist design** with **immersive sound loops**.
+NIORA blends **minimalist design** with **immersive sound loops**.
 
 ---
 
