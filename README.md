@@ -16,7 +16,7 @@ NIORA blends **minimalist design** with **immersive sound loops**.
 - 📱 **Responsive Design** – Works on desktop, tablet, and mobile.  
 
 ---
-
+**More sounds and modes will be added in the future**
 **Screenshots:**
 
 <p align="center">
